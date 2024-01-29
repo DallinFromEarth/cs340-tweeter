@@ -1,6 +1,6 @@
 # Tweeter-Web
 
-A starter project for the Tweeter Web application.
+A starter project for the Tweeter Web application. Yay!
 
 ## Setting Up the Project
 
