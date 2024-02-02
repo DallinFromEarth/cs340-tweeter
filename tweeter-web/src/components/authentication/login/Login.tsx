@@ -63,7 +63,7 @@ const Login = (props: Props) => {
 
   const inputFieldGenerator = () => {
     return (
-      <AuthFields />
+      <AuthFields onChangeAlias={setAlias} onChangePassword={setPassword}/>
     );
   };
 
