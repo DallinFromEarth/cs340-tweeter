@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Post from "../statusItem/Post";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
+import useUserInfo from "../userInfo/UserInfoHook";
 
 export const PAGE_SIZE = 10;
 
@@ -37,7 +38,7 @@ const StatusItemScroller = (props: Props) => {
     setItems([...itemsReference.current, ...newItems]);
 
   const { displayedUser, setDisplayedUser, currentUser, authToken } =
-    useContext(UserInfoContext);
+    useUserInfo();
 
   // Load initial items
   useEffect(() => {
