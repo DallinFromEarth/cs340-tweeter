@@ -3,6 +3,7 @@ import { useState } from "react";
 interface Props {
     onChangeAlias: (value: string) => void;
     onChangePassword: (value: string) => void;
+    isBottomField: boolean;
 }
 
 const AuthFields = ( props: Props) => {
@@ -20,10 +21,10 @@ const AuthFields = ( props: Props) => {
           />
           <label htmlFor="aliasInput">Alias</label>
         </div>
-        <div className="form-floating mb-3">
+        <div className={`form-floating ${props.isBottomField ? "mb-3" : ""}`}>
           <input
             type="password"
-            className="form-control bottom"
+            className={`form-control ${props.isBottomField ? "bottom" : ""}`}
             id="passwordInput"
             placeholder="Password"
             onChange={(event) => props.onChangePassword(event.target.value)}

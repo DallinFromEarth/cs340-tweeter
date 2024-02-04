@@ -15,21 +15,6 @@ const StatusItem = (props: Props) => {
     const { displayedUser, setDisplayedUser, currentUser, authToken } =
     useUserInfo();
 
-    const { displayErrorMessage } = useToastListener();
-
-    const extractAlias = (value: string): string => {
-        let index = value.indexOf("@");
-        return value.substring(index);
-      };
-    
-      const getUser = async (
-        authToken: AuthToken,
-        alias: string
-      ): Promise<User | null> => {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.findUserByAlias(alias);
-      };
-
     const { navigateToUser } = useUserNavigation();
 
     return (
