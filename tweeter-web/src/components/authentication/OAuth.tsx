@@ -3,7 +3,7 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import useToastListener from "../toaster/ToastListenerHook";
 
 
-const SignInOptions = () => {
+const OAuth = () => {
     const { displayInfoMessage } = useToastListener();
     
     const displayInfoMessageWithDarkBackground = (message: string): void => {
@@ -94,4 +94,4 @@ const SignInOptions = () => {
     )
 }
 
-export default SignInOptions
+export default OAuth
