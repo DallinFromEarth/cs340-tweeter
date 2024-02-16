@@ -3,11 +3,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import { ChangeEvent, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthFields from "../AuthFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
+import { RegisterPresenter, RegisterView } from "../../../presenter/RegisterPresenter";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -60,44 +60,16 @@ const Register = () => {
     }
   };
 
+  const listener: RegisterView = {
+    navigate: navigate,
+    displayErrorMessage: displayErrorMessage,
+    updateUserInfo: updateUserInfo
+  }
+
+  const presenter = new RegisterPresenter(listener)
+
   const doRegister = async () => {
-    try {
-      let [user, authToken] = await register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes
-      );
-
-      updateUserInfo(user, user, authToken, rememberMeRef.current);
-      navigate("/");
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    }
-  };
-
-  const register = async (
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    userImageBytes: Uint8Array
-  ): Promise<[User, AuthToken]> => {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    let imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
-
-    // TODO: Replace with the result of calling the server
-    let user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, FakeData.instance.authToken];
+    presenter.doRegister(firstName,lastName,alias,password,imageBytes,rememberMeRef.current)
   };
 
   const inputFieldGenerator = () => {
