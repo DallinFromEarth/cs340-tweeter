@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import { ChangeEvent, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { Buffer } from "buffer";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthFields from "../AuthFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
@@ -31,39 +30,15 @@ const Register = () => {
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    handleImageFile(file);
-  };
-
-  const handleImageFile = (file: File | undefined) => {
-    if (file) {
-      setImageUrl(URL.createObjectURL(file));
-
-      const reader = new FileReader();
-      reader.onload = (event: ProgressEvent<FileReader>) => {
-        const imageStringBase64 = event.target?.result as string;
-
-        // Remove unnecessary file metadata from the start of the string.
-        const imageStringBase64BufferContents =
-          imageStringBase64.split("base64,")[1];
-
-        const bytes: Uint8Array = Buffer.from(
-          imageStringBase64BufferContents,
-          "base64"
-        );
-
-        setImageBytes(bytes);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImageUrl("");
-      setImageBytes(new Uint8Array());
-    }
+    presenter.handleImageFile(file);
   };
 
   const listener: RegisterView = {
     navigate: navigate,
     displayErrorMessage: displayErrorMessage,
-    updateUserInfo: updateUserInfo
+    updateUserInfo: updateUserInfo,
+    setImageBytes: setImageBytes,
+    setImageUrl: setImageUrl,
   }
 
   const presenter = new RegisterPresenter(listener)
