@@ -14,6 +14,12 @@ import { AuthToken, User, FakeData, Status } from "tweeter-shared";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import useUserInfo from "./components/userInfo/UserInfoHook";
+import { FollowingPresenter } from "./presenter/FollowingPresenter";
+import { UserItemView } from "./presenter/UserItemPresenter";
+import { FollowersPresenter } from "./presenter/FollowersPresenter";
+import { StatusItemView } from "./presenter/StatusItemPresenter";
+import { StoryPresenter } from "./presenter/StoryPresenter";
+import { FeedPresenter } from "./presenter/FeedPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -37,67 +43,36 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreFollowers = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: User | null
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
-  };
-
-  const loadMoreFollowees = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: User | null
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
-  };
-
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Navigate to="/feed" />} />
-        <Route path="feed" element={<StatusItemScroller loadStatusItems={loadMoreFeedItems} statusTypeDescription="feed"/>} />
-        <Route path="story" element={<StatusItemScroller loadStatusItems={loadMoreStoryItems} statusTypeDescription="story" />} />
+
+        <Route path="feed" element={
+          <StatusItemScroller 
+            presenterGenerator={(view: StatusItemView) => new FeedPresenter(view)}
+          />
+          } 
+        />
+        <Route path="story" element={
+          <StatusItemScroller 
+            presenterGenerator={(view: StatusItemView) => new StoryPresenter(view)}
+          />
+          } 
+        />
         <Route
           path="following"
           element={
             <UserItemScroller
-              loadItems={loadMoreFollowees}
-              itemDescription="followees"
+              presenterGenerator={(view: UserItemView) => new FollowingPresenter(view)}
             />
           }
-        />
+        /> 
         <Route
           path="followers"
           element={
             <UserItemScroller
-              loadItems={loadMoreFollowers}
-              itemDescription="followers"
+              presenterGenerator={(view: UserItemView) => new FollowersPresenter(view)}
             />
           }
         />
