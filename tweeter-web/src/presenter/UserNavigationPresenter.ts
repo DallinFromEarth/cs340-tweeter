@@ -14,22 +14,24 @@ export class UserNavigationPresenter extends Presenter{
       this.service = new UserService;
     }
 
+    protected get view(): UserNavigationView {
+      return super.view as UserNavigationView;
+    }
+
     public async navigateToUser(authToken: AuthToken, currentUser: User, aliasString: string) {
-        try {
-            let alias = this.extractAlias(aliasString);
+      this.doFailureReportinOperation(async () => {
+        let alias = this.extractAlias(aliasString);
       
-            let user = await this.service.getUser(authToken!, alias);
+        let user = await this.service.getUser(authToken!, alias);
       
-            if (!!user) {
-              if (currentUser!.equals(user)) {
-                this.view.setDisplayedUser(currentUser!);
-              } else {
-                this.view.setDisplayedUser(user);
-              }
-            }
-          } catch (error) {
-            this.view.displayErrorMessage(`Failed to get user because of exception: ${error}`);
+        if (!!user) {
+          if (currentUser!.equals(user)) {
+            this.view.setDisplayedUser(currentUser!);
+          } else {
+            this.view.setDisplayedUser(user);
           }
+        }
+      }, "get user")
     }
 
     private extractAlias(value: string): string {

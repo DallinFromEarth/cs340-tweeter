@@ -8,8 +8,23 @@ export class Presenter {
     protected get view(): View {
         return this._view
     }
+
+    protected async doFailureReportinOperation(operation: () => Promise<void>,operationDescription: string) {
+        try {
+            await operation();
+          } catch (error) {
+            this.view.displayErrorMessage(
+                `Failed to ${operationDescription} because of exception: ${error}`
+                );
+          }
+    } 
 }
 
 export interface View {
     displayErrorMessage: (message: string) => void;
+}
+
+export interface MessageView extends View {
+    clearLastInfoMessage: () => void;
+    displayInfoMessage: (message: string, duration: number, bootstrapClasses?: string | undefined) => void
 }

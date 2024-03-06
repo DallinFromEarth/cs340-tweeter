@@ -12,6 +12,10 @@ export class StoryPresenter extends StatusItemPresenter {
         this.service = new StatusService();
     }
 
+    protected get view(): StatusItemView {
+      return super.view as StatusItemView;
+    }
+
     public async loadMoreItems(authToken: AuthToken, user: User) {
         try {
           if (this.hasMoreItems) {

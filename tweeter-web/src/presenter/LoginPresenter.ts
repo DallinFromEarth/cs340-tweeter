@@ -16,6 +16,10 @@ export class LoginPresenter extends Presenter {
       this.service = new UserService();
     }
 
+    protected get view(): LoginView {
+      return super.view as LoginView;
+    }
+
     public async doLogin (alias: string, password: string, originalUrl: string | undefined, rememberMe: boolean) {
         try {
             let [user, authToken] = await this.service.login(alias, password);

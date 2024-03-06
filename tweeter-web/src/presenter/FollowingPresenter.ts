@@ -11,6 +11,10 @@ export class FollowingPresenter extends UserItemPresenter {
         super(view)
         this.service = new FollowService();
     }
+
+    protected get view(): UserItemView {
+      return super.view as UserItemView;
+    }
  
     public async loadMoreItems(authToken: AuthToken, user: User) {
         try {
