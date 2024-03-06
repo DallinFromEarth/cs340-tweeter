@@ -1,20 +1,19 @@
 import { NavigateOptions, To } from "react-router-dom"
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { Presenter, View } from "./Presenter";
 
-export interface LoginView {
+export interface LoginView extends View{
     navigate: (to: To, options?: NavigateOptions | undefined) => void;
-    displayErrorMessage: (message: string, bootstrapClasses?: string | undefined) => void;
     updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void
 }
 
-export class LoginPresenter {
+export class LoginPresenter extends Presenter {
     private service: UserService;
-    private view: LoginView;
 
     public constructor(view: LoginView) {
-        this.service = new UserService();
-        this.view = view
+      super(view)
+      this.service = new UserService();
     }
 
     public async doLogin (alias: string, password: string, originalUrl: string | undefined, rememberMe: boolean) {

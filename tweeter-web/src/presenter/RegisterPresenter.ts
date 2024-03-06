@@ -2,22 +2,21 @@ import { NavigateOptions, To } from "react-router-dom";
 import { UserService } from "../model/service/UserService";
 import { AuthToken, User } from "tweeter-shared";
 import { Buffer } from "buffer";
+import { Presenter, View } from "./Presenter";
 
-export interface RegisterView {
+export interface RegisterView extends View{
     navigate: (to: To, options?: NavigateOptions | undefined) => void;
-    displayErrorMessage: (message: string, bootstrapClasses?: string | undefined) => void;
     updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void
     setImageUrl: (value: React.SetStateAction<string>) => void;
     setImageBytes: (value: React.SetStateAction<Uint8Array>) => void;
 }
 
-export class RegisterPresenter {
+export class RegisterPresenter extends Presenter{
     private service: UserService;
-    private view: RegisterView;
 
     public constructor(view: RegisterView) {
-        this.service = new UserService();
-        this.view = view
+      super(view)
+      this.service = new UserService();
     }
 
     public async doRegister(
