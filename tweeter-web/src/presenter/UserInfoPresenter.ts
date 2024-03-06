@@ -25,7 +25,7 @@ export class UserInfoPresenter extends Presenter {
         currentUser: User,
         displayedUser: User
       ) {
-        try {
+        this.doFailureReportinOperation(async () => {
           if (currentUser === displayedUser) {
             this.view.setIsFollower(false);
           } else {
@@ -33,11 +33,7 @@ export class UserInfoPresenter extends Presenter {
               await this.service.getIsFollowerStatus(authToken!, currentUser!, displayedUser!)
             );
           }
-        } catch (error) {
-          this.view.displayErrorMessage(
-            `Failed to determine follower status because of exception: ${error}`
-          );
-        }
+        }, "determine follower status")
     };
 
     public async setNumbFollowees (

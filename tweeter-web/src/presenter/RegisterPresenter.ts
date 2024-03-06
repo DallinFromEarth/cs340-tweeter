@@ -31,7 +31,7 @@ export class RegisterPresenter extends Presenter{
         imageBytes: Uint8Array,
         rememberMe: boolean
         ) {
-        try {
+          this.doFailureReportinOperation( async () => {
             let [user, authToken] = await this.service.register(
               firstName,
               lastName,
@@ -42,11 +42,7 @@ export class RegisterPresenter extends Presenter{
       
             this.view.updateUserInfo(user, user, authToken, rememberMe);
             this.view.navigate("/");
-          } catch (error) {
-            this.view.displayErrorMessage(
-              `Failed to register user because of exception: ${error}`
-            );
-          }
+          }, "register user")
     }
 
     public handleImageFile(file: File | undefined) {

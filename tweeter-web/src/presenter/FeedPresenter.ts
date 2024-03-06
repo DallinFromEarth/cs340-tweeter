@@ -17,18 +17,14 @@ export class FeedPresenter extends StatusItemPresenter {
     }
 
     public async loadMoreItems(authToken: AuthToken, user: User) {
-        try {
-          if (this.hasMoreItems) {
-            let [newItems, hasMore] = await this.service.loadMoreFeedItems(authToken, user, PAGE_SIZE, this.lastItem)
-    
-            this.hasMoreItems = hasMore;
-            this.lastItem = newItems[newItems.length - 1];
-            this.view.addItems(newItems);
-          }
-        } catch (error) {
-          this.view.displayErrorMessage(
-            `Failed to load feed items because of exception: ${error}`
-          );
+      this.doFailureReportinOperation(async () => {
+        if (this.hasMoreItems) {
+          let [newItems, hasMore] = await this.service.loadMoreFeedItems(authToken, user, PAGE_SIZE, this.lastItem)
+  
+          this.hasMoreItems = hasMore;
+          this.lastItem = newItems[newItems.length - 1];
+          this.view.addItems(newItems);
         }
+      }, "load feed items")
     };
 }

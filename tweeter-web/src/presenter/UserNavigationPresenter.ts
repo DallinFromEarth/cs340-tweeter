@@ -31,7 +31,7 @@ export class UserNavigationPresenter extends Presenter{
             this.view.setDisplayedUser(user);
           }
         }
-      }, "get user")
+      }, "get user") 
     }
 
     private extractAlias(value: string): string {

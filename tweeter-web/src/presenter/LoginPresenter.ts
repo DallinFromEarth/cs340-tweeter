@@ -21,20 +21,16 @@ export class LoginPresenter extends Presenter {
     }
 
     public async doLogin (alias: string, password: string, originalUrl: string | undefined, rememberMe: boolean) {
-        try {
-            let [user, authToken] = await this.service.login(alias, password);
+      this.doFailureReportinOperation(async () => {
+        let [user, authToken] = await this.service.login(alias, password);
       
-            this.view.updateUserInfo(user, user, authToken, rememberMe);
-      
-            if (!!originalUrl) {
-              this.view.navigate(originalUrl);
-            } else {
-              this.view.navigate("/");
-            }
-          } catch (error) {
-            this.view.displayErrorMessage(
-              `Failed to log user in because of exception: ${error}`
-            );
-          }
+        this.view.updateUserInfo(user, user, authToken, rememberMe);
+  
+        if (!!originalUrl) {
+          this.view.navigate(originalUrl);
+        } else {
+          this.view.navigate("/");
+        }
+      }, "log user in");
     }
 }
