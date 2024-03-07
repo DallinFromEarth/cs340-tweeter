@@ -1,22 +1,18 @@
-import { NavigateOptions, To } from "react-router-dom";
 import { UserService } from "../model/service/UserService";
-import { AuthToken, User } from "tweeter-shared";
 import { Buffer } from "buffer";
-import { Presenter, View } from "./Presenter";
+import { Presenter } from "./Presenter";
+import { AuthPresenter, AuthView } from "./AuthPresenter";
+import { User, AuthToken } from "tweeter-shared";
 
-export interface RegisterView extends View{
-    navigate: (to: To, options?: NavigateOptions | undefined) => void;
-    updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void
+export interface RegisterView extends AuthView {
     setImageUrl: (value: React.SetStateAction<string>) => void;
     setImageBytes: (value: React.SetStateAction<Uint8Array>) => void;
 }
 
-export class RegisterPresenter extends Presenter{
-    private service: UserService;
+export class RegisterPresenter extends AuthPresenter{
 
     public constructor(view: RegisterView) {
       super(view)
-      this.service = new UserService();
     }
 
     protected get view(): RegisterView {
@@ -31,18 +27,17 @@ export class RegisterPresenter extends Presenter{
         imageBytes: Uint8Array,
         rememberMe: boolean
         ) {
-          this.doFailureReportinOperation( async () => {
-            let [user, authToken] = await this.service.register(
+          this.doAuthentication(
+            rememberMe, 
+            "register user", 
+            async () => await this.service.register(
               firstName,
               lastName,
               alias,
               password,
               imageBytes
-            );
-      
-            this.view.updateUserInfo(user, user, authToken, rememberMe);
-            this.view.navigate("/");
-          }, "register user")
+            ),
+            () => this.view.navigate("/"))
     }
 
     public handleImageFile(file: File | undefined) {
