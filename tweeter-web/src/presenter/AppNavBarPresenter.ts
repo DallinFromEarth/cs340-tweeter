@@ -3,10 +3,11 @@ import { UserService } from "../model/service/UserService";
 import { MessageView, Presenter, View } from "./Presenter";
 
 export class AppNavBarPresenter extends Presenter{ 
-    private _service: UserService | null = null;
+    private _service: UserService;
 
     public constructor(view: AppNavBarView) {
         super(view);
+        this._service = new UserService();
     }
 
     public get view() {
@@ -14,9 +15,6 @@ export class AppNavBarPresenter extends Presenter{
     }
 
     public get service(): UserService {
-        if(this._service == null) {
-            this._service = new UserService();
-        }
         return this._service;
     }
 
