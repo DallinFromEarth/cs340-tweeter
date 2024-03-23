@@ -18,11 +18,11 @@ export class PostStatusPresenter extends Presenter {
         return this._service;
     }
 
-    public submitPost(post: string, authToken: AuthToken, currentUser: User) {
+    public submitPost(post: string, authToken: AuthToken, currentUser: User, timestamp: number = Date.now()) {
         this.doFailureReportinOperation( async () => {
             this.view.displayInfoMessage("Posting status...", 0);
       
-            let status = new Status(post, currentUser, Date.now());
+            let status = new Status(post, currentUser, timestamp);
       
             await this.service.postStatus(authToken, status);
       
