@@ -11,6 +11,7 @@ import { AuthView } from "../../../presenter/AuthPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -31,7 +32,7 @@ const Login = (props: Props) => {
     updateUserInfo: updateUserInfo
   }
 
-  const presenter = new LoginPresenter(listener)
+  const presenter = props.presenter ?? new LoginPresenter(listener)
 
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;

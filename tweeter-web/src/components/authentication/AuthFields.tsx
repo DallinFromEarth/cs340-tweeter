@@ -16,6 +16,7 @@ const AuthFields = ( props: Props) => {
             className="form-control"
             size={50}
             id="aliasInput"
+            aria-label="alias"
             placeholder="name@example.com"
             onChange={(event) => props.onChangeAlias(event.target.value)}
           />
@@ -26,6 +27,7 @@ const AuthFields = ( props: Props) => {
             type="password"
             className={`form-control ${props.isBottomField ? "bottom" : ""}`}
             id="passwordInput"
+            aria-label="password"
             placeholder="Password"
             onChange={(event) => props.onChangePassword(event.target.value)}
           />
