@@ -1,0 +1,6 @@
+BUCKET='tweeter-fall-2024-cs340'
+LAMBDA_ROLE='arn:aws:iam::378503310330:role/tweeter-lambda-deploy'
+EDIT_LAMBDALIST='
+tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:378503310330:layer:tweeterLambdaLayer:3'

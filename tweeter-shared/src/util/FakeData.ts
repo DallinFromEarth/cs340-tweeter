@@ -73,7 +73,7 @@ export class FakeData {
     if (this.fakeUsers !== this.fakeUsers) {
       // Verify that this.fakeUsers always returns the same list of users (this could be violated by mock implementations of fakeUsers)
       throw new Error(
-        "fakeUsers should return the same list of fake users each time it's called",
+        "fakeUsers should return the same list of fake users each time it's called"
       );
     }
 
@@ -85,7 +85,7 @@ export class FakeData {
     if (this.fakeStatuses !== this.fakeStatuses) {
       // Verify that this.fakeStatuses always returns the same list of users (this could be violated by mock implementations of fakeStatuses)
       throw new Error(
-        "fakeStatuses should return the same list of fake statuses each time it's called",
+        "fakeStatuses should return the same list of fake statuses each time it's called"
       );
     }
   }
@@ -98,18 +98,18 @@ export class FakeData {
     let timestampStart = 0;
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < this.fakeUsers.length; j++) {
-        let sender = this.fakeUsers[j];
-        let mention =
+        const sender = this.fakeUsers[j];
+        const mention =
           j < this.fakeUsers.length - 1
             ? this.fakeUsers[j + 1]
             : this.fakeUsers[0];
 
-        let post = `Post ${i} ${j}
+        const post = `Post ${i} ${j}
         My friend ${mention.alias} likes this website: http://byu.edu. Do you? 
         Or do you prefer this one: http://cs.byu.edu?`;
-        let timestamp =
+        const timestamp =
           timestampStart + 30000000000 * (i * this.fakeUsers.length + j);
-        let status = new Status(post, sender, timestamp);
+        const status = new Status(post, sender, timestamp);
         this.allStatuses.push(status);
       }
     }
@@ -159,13 +159,13 @@ export class FakeData {
    *
    * @param lastUser the last user returned in the previous page of results.
    * @param limit maximum number of users to return (i.e., page size).
-   * @param omit if not null, specifies a user that should not be returned.
+   * @param omit if not null, specifies the alias of a user that should not be returned.
    * @returns a tuple containing a page of users and a "hasMorePages" flag.
    */
   public getPageOfUsers(
     lastUser: User | null,
     limit: number,
-    omit: User | null,
+    omit: string | null
   ): [User[], boolean] {
     let userIndex = 0;
 
@@ -179,12 +179,12 @@ export class FakeData {
       }
     }
 
-    let fakeUsersToReturn: User[] = [];
+    const fakeUsersToReturn: User[] = [];
     let count = 0;
     while (userIndex < this.fakeUsers.length && count < limit) {
-      let currentUser = this.fakeUsers[userIndex];
+      const currentUser = this.fakeUsers[userIndex];
 
-      if (omit == null || currentUser.alias !== omit.alias) {
+      if (omit == null || currentUser.alias !== omit) {
         fakeUsersToReturn.push(currentUser);
         count++;
       }
@@ -204,14 +204,14 @@ export class FakeData {
    */
   public getPageOfStatuses(
     lastStatus: Status | null,
-    limit: number,
+    limit: number
   ): [Status[], boolean] {
     let statusIndex = 0;
 
     // Find the index of the first status to be returned
     if (lastStatus != null) {
       for (let i = 0; i < this.fakeStatuses.length; i++) {
-        let currentStatus = this.fakeStatuses[i];
+        const currentStatus = this.fakeStatuses[i];
         if (currentStatus.equals(lastStatus)) {
           statusIndex = i + 1;
           break;
@@ -219,7 +219,7 @@ export class FakeData {
       }
     }
 
-    let fakeStatusesToReturn: Status[] = [];
+    const fakeStatusesToReturn: Status[] = [];
     for (
       let count = 0;
       statusIndex < this.fakeStatuses.length && count < limit;
@@ -232,16 +232,16 @@ export class FakeData {
   }
 
   /**
-   * Returns a followers count for the user. Always returns 20 for male users and 21 for female users.
+   * Returns a followers count for the user, as a random number between 1 and 10.
    */
-  public getFollowersCount(user: User): number | PromiseLike<number> {
-    return user.imageUrl === FEMALE_IMAGE_URL ? 21 : 20;
+  public getFollowerCount(userAlias: string): number | PromiseLike<number> {
+    return Math.floor(Math.random() * 10) + 1
   }
 
   /**
-   * Returns a followees count for the user. Always returns 10 for male users and 11 for female users.
+   * Returns a followees count for the user, as a random number between 1 and 10.
    */
-  public getFolloweesCount(user: User): number | PromiseLike<number> {
-    return user.imageUrl === FEMALE_IMAGE_URL ? 11 : 10;
+  public getFolloweeCount(userAlias: string): number | PromiseLike<number> {
+    return Math.floor(Math.random() * 10) + 1
   }
 }
