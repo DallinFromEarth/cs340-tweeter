@@ -48,7 +48,7 @@ export class UserService {
         user: User
       ): Promise<number> {
         // TODO: Replace with the result of calling server
-        return FakeData.instance.getFolloweesCount(user);
+        return FakeData.instance.getFolloweeCount(user.alias);
     };
 
     public async getFollowersCount (
@@ -56,7 +56,7 @@ export class UserService {
         user: User
       ): Promise<number> {
         // TODO: Replace with the result of calling server
-        return FakeData.instance.getFollowersCount(user);
+        return FakeData.instance.getFollowerCount(user.alias);
     };
 
     public async follow (
