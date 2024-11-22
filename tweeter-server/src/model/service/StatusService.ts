@@ -22,7 +22,11 @@ export class StatusService {
         lastItem: StatusDTO | null
       ): Promise<[StatusDTO[], boolean]> {
         // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(Status.fromDTO(lastItem), pageSize);
+        const [statuses, moreItems] = FakeData.instance.getPageOfStatuses(Status.fromDTO(lastItem), pageSize)
+        const statusDtos = statuses.map((status: Status) => {
+          return status.dto()
+        })
+        return [statusDtos, moreItems]
       };
 
       public async postStatus (

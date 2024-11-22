@@ -27,7 +27,7 @@ export class StatusService {
           userAlias: user.alias,
           token: authToken.token,
           pageSize: pageSize,
-          lastItem: lastItem
+          lastItem: lastItem ? lastItem.dto() : null
         }
         return ServerFacade.instance.getMoreFeedItems(request)
       };
