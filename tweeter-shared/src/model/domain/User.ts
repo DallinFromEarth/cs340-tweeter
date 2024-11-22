@@ -90,6 +90,9 @@ export class User {
     }
   }
 
+  public static fromDTO(dto: UserDTO) : User
+  public static fromDTO(dto: null) : null
+  public static fromDTO(dto: UserDTO | null) : User | null 
   public static fromDTO(dto: UserDTO | null) : User | null {
     return dto == null? null : new User(dto.firstName, dto.lastName, dto.alias, dto.imageUrl);
   }
