@@ -1,4 +1,4 @@
-import { AuthRequest, AuthToken, FakeData, RegisterRequest, TweeterRequest, User } from "tweeter-shared";
+import { AuthRequest, AuthToken, FakeData, IsFollowerRequest, IsFollowerResponse, RegisterRequest, TweeterRequest, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import { ServerFacade } from "../../network/ServerFacade";
 
@@ -45,24 +45,38 @@ export class UserService {
         user: User,
         selectedUser: User
       ): Promise<boolean> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.isFollower();
+        const request: IsFollowerRequest = {
+          token: authToken.token,
+          userAlias: user.alias,
+          selectedUser: selectedUser.dto()
+        }
+        
+        const response = await ServerFacade.instance.getIsFollowerStatus(request)
+        return response.isFollower
     };
 
     public async getFolloweesCount (
         authToken: AuthToken,
         user: User
       ): Promise<number> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getFolloweeCount(user.alias);
+        const request: TweeterRequest = {
+          token: authToken.token,
+          userAlias: user.alias
+        }
+        const response = await ServerFacade.instance.getFolloweesCount(request)
+        return response.count
     };
 
     public async getFollowersCount (
         authToken: AuthToken,
         user: User
       ): Promise<number> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getFollowerCount(user.alias);
+        const request: TweeterRequest = {
+          token: authToken.token,
+          userAlias: user.alias
+        }
+        const response = await ServerFacade.instance.getFollowersCount(request)
+        return response.count
     };
 
     public async follow (
@@ -104,7 +118,6 @@ export class UserService {
       };
 
     public async logout (authToken: AuthToken): Promise<void> {
-      // Pause so we can see the logging out message. Delete when the call to the server is implemented.
       const request: TweeterRequest = {
         token: authToken.token,
         userAlias: ""

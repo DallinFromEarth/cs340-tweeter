@@ -1,8 +1,12 @@
 import {
   AuthRequest,
   AuthResponse,
+    CountResponse,
+    IsFollowerRequest,
+    IsFollowerResponse,
     PagedItemRequest,
     PagedItemResponse,
+    PostStatusRequest,
     RegisterRequest,
     Status,
     StatusDTO,
@@ -133,6 +137,38 @@ import {
       TweeterRequest,
       TweeterResponse
       >(request, "/auth/logout")
+      return response
+    }
+
+    public async postStatus(request: PostStatusRequest) {
+      const response = await this.clientCommunicator.doPost<
+      PostStatusRequest,
+      TweeterResponse
+      >(request, "/status")
+      return response
+    }
+
+    public async getFolloweesCount(request: TweeterRequest) {
+      const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      CountResponse
+      >(request, "/followee/count")
+      return response
+    }
+
+    public async getFollowersCount(request: TweeterRequest) {
+      const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      CountResponse
+      >(request, "/follower/count")
+      return response
+    }
+
+    public async getIsFollowerStatus(request: IsFollowerRequest) {
+      const response = await this.clientCommunicator.doPost<
+      IsFollowerRequest,
+      IsFollowerResponse
+      >(request, "/follower/check")
       return response
     }
   }

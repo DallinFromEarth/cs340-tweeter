@@ -8,5 +8,9 @@ tweeterGetFeed | lambda/status/GetFeedLambda.handler
 tweeterRegister | lambda/auth/RegisterLambda.handler
 tweeterLogin | lambda/auth/LoginLambda.handler
 tweeterLogout | lambda/auth/LogoutLambda.handler
+tweeterPostStatus | lambda/status/PostStatusLambda.handler
+tweeterCountFollowees | lambda/follow/CountFolloweesLambda.handler
+tweeterCountFollowers | lambda/follow/CountFollowersLambda.handler
+tweeterIsFollower | lambda/follow/IsFollowerLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:378503310330:layer:tweeterLambdaLayer:7'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:378503310330:layer:tweeterLambdaLayer:9'
