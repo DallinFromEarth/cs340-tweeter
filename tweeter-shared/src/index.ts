@@ -21,12 +21,15 @@ export type { StatusDTO } from "./model/dto/StatusDTO"
 //
 export type { TweeterRequest } from "./model/net/request/TweeterRequest"
 export type { PagedItemRequest } from "./model/net/request/PagedItemRequest"
+export type { AuthRequest } from "./model/net/request/AuthRequest"
+export type { RegisterRequest } from "./model/net/request/RegisterRequest"
 
 //
 // Responses
 //
 export type { TweeterResponse } from "./model/net/response/TweeterResponse"
 export type { PagedItemResponse } from "./model/net/response/PagedItemResponse"
+export type { AuthResponse } from "./model/net/response/AuthResponse"
 
 //
 // FAKE DATA

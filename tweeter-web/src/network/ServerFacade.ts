@@ -1,8 +1,13 @@
 import {
+  AuthRequest,
+  AuthResponse,
     PagedItemRequest,
     PagedItemResponse,
+    RegisterRequest,
     Status,
     StatusDTO,
+    TweeterRequest,
+    TweeterResponse,
     User,
     UserDTO,
   } from "tweeter-shared";
@@ -19,7 +24,7 @@ import {
             this._instance = new ServerFacade();
         }
         return this._instance
-    }
+    } 
   
     private async getMoreUserItems(
         request: PagedItemRequest<UserDTO>,
@@ -101,5 +106,33 @@ import {
       request: PagedItemRequest<StatusDTO>
     ): Promise<[Status[], boolean]> {
       return this.getMoreStatusItems(request, "/story/items", "story items")
+    }
+
+    public async doRegister(
+      request: RegisterRequest
+    ): Promise<AuthResponse> {
+      const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      AuthResponse
+    >(request, "/auth/register");
+    return response
+    }
+
+    public async doLogin(
+      request: AuthRequest
+    ): Promise<AuthResponse> {
+      const response = await this.clientCommunicator.doPost<
+      AuthRequest,
+      AuthResponse
+    >(request, "/auth/login")
+    return response
+    }
+
+    public async doLogout(request: TweeterRequest) {
+      const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      TweeterResponse
+      >(request, "/auth/logout")
+      return response
     }
   }

@@ -1,18 +1,16 @@
-import { AuthRequest, AuthToken, FakeData, RegisterRequest, TweeterRequest, User } from "tweeter-shared";
+import { AuthToken, FakeData, RegisterRequest, User } from "tweeter-shared";
 import { Buffer } from "buffer";
-import { ServerFacade } from "../../network/ServerFacade";
 
 export class UserService {
     public async login (alias: string, password: string): Promise<[User, AuthToken]> {
-        const request: AuthRequest = {
-          userAlias: alias,
-          password: password,
-          token: ""
-        }
-
-        const response = await ServerFacade.instance.doLogin(request)
+        // TODO: Replace with the result of calling the server
+        let user = FakeData.instance.firstUser;
     
-        return [User.fromDTO(response.user), response.authToken];
+        if (user === null) {
+          throw new Error("Invalid alias or password");
+        }
+    
+        return [user, FakeData.instance.authToken];
     };
 
     public async register (
@@ -20,24 +18,16 @@ export class UserService {
         lastName: string,
         alias: string,
         password: string,
-        userImageBytes: Uint8Array
+        userImageBytes: string
       ): Promise<[User, AuthToken]> {
-        // Not neded now, but will be needed when you make the request to the server in milestone 3
-        let imageStringBase64: string =
-          Buffer.from(userImageBytes).toString("base64");
-
-        const request: RegisterRequest = {
-          firstName: firstName,
-          lastName: lastName,
-          userAlias: alias,
-          password: password,
-          userImage: imageStringBase64,
-          token: ""
+        // TODO: Replace with the result of calling the server
+        let user = FakeData.instance.firstUser;
+    
+        if (user === null) {
+          throw new Error("Invalid registration");
         }
     
-        const response = await ServerFacade.instance.doRegister(request)
-    
-        return [User.fromDTO(response.user), response.authToken];
+        return [user, FakeData.instance.authToken];
     };
 
     public async getIsFollowerStatus (
@@ -103,12 +93,8 @@ export class UserService {
         return FakeData.instance.findUserByAlias(alias);
       };
 
-    public async logout (authToken: AuthToken): Promise<void> {
+    public async logout (authToken: string): Promise<void> {
       // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-      const request: TweeterRequest = {
-        token: authToken.token,
-        userAlias: ""
-      }
-      await ServerFacade.instance.doLogout(request)
+      await new Promise((res) => setTimeout(res, 1000));
     };
 }
