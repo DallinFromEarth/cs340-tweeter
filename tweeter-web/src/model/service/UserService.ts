@@ -1,4 +1,4 @@
-import { AuthRequest, AuthToken, ChangeFollowRequest, FakeData, IsFollowerRequest, IsFollowerResponse, RegisterRequest, TweeterRequest, User } from "tweeter-shared";
+import { AuthRequest, AuthToken, ChangeFollowRequest, IsFollowerRequest, RegisterRequest, TweeterRequest, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import { ServerFacade } from "../../network/ServerFacade";
 
