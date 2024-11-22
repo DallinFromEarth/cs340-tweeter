@@ -25,6 +25,7 @@ export type { AuthRequest } from "./model/net/request/AuthRequest"
 export type { RegisterRequest } from "./model/net/request/RegisterRequest"
 export type { PostStatusRequest } from "./model/net/request/PostStatusRequest"
 export type { IsFollowerRequest } from "./model/net/request/IsFollowerRequest"
+export type { ChangeFollowRequest } from "./model/net/request/ChangeFollowRequest"
 
 //
 // Responses
@@ -34,6 +35,7 @@ export type { PagedItemResponse } from "./model/net/response/PagedItemResponse"
 export type { AuthResponse } from "./model/net/response/AuthResponse"
 export type { CountResponse } from "./model/net/response/CountResponse"
 export type { IsFollowerResponse } from "./model/net/response/IsFollowerResponse"
+export type { UserResponse } from "./model/net/response/UserResponse"
 
 //
 // FAKE DATA

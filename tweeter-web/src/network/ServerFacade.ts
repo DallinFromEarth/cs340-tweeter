@@ -1,6 +1,7 @@
 import {
   AuthRequest,
   AuthResponse,
+    ChangeFollowRequest,
     CountResponse,
     IsFollowerRequest,
     IsFollowerResponse,
@@ -14,6 +15,7 @@ import {
     TweeterResponse,
     User,
     UserDTO,
+    UserResponse,
   } from "tweeter-shared";
   import { ClientCommunicator } from "./ClientCommunicator";
   
@@ -169,6 +171,30 @@ import {
       IsFollowerRequest,
       IsFollowerResponse
       >(request, "/follower/check")
+      return response
+    }
+
+    public async doFollow(request: ChangeFollowRequest) {
+      const response = await this.clientCommunicator.doPost<
+      ChangeFollowRequest,
+      TweeterResponse
+      >(request, "/follow")
+      return response
+    }
+
+    public async doUnfollow(request: ChangeFollowRequest) {
+      const response = await this.clientCommunicator.doPost<
+      ChangeFollowRequest,
+      TweeterResponse
+      >(request, "/unfollow")
+      return response
+    }
+
+    public async getUser(request: TweeterRequest) {
+      const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      UserResponse
+      >(request, "/user")
       return response
     }
   }

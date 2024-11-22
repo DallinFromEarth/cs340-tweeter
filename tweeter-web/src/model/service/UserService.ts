@@ -1,4 +1,4 @@
-import { AuthRequest, AuthToken, FakeData, IsFollowerRequest, IsFollowerResponse, RegisterRequest, TweeterRequest, User } from "tweeter-shared";
+import { AuthRequest, AuthToken, ChangeFollowRequest, FakeData, IsFollowerRequest, IsFollowerResponse, RegisterRequest, TweeterRequest, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import { ServerFacade } from "../../network/ServerFacade";
 
@@ -83,10 +83,12 @@ export class UserService {
         authToken: AuthToken,
         userToFollow: User
     ): Promise<[followersCount: number, followeesCount: number]> {
-        // Pause so we can see the following message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-    
-        // TODO: Call the server
+        const request: ChangeFollowRequest = {
+          token: authToken.token,
+          userAlias: "",
+          userToFollowOrNot: userToFollow.dto()
+        }
+        ServerFacade.instance.doFollow(request)
     
         let followersCount = await this.getFollowersCount(authToken, userToFollow);
         let followeesCount = await this.getFolloweesCount(authToken, userToFollow);
@@ -98,10 +100,12 @@ export class UserService {
         authToken: AuthToken,
         userToUnfollow: User
     ): Promise<[followersCount: number, followeesCount: number]> {
-        // Pause so we can see the unfollowing message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-    
-        // TODO: Call the server
+        const request: ChangeFollowRequest = {
+          token: authToken.token,
+          userAlias: "",
+          userToFollowOrNot: userToUnfollow.dto()
+        }
+        ServerFacade.instance.doUnfollow(request)
     
         let followersCount = await this.getFollowersCount(authToken, userToUnfollow);
         let followeesCount = await this.getFolloweesCount(authToken, userToUnfollow);
@@ -113,8 +117,13 @@ export class UserService {
         authToken: AuthToken,
         alias: string
       ): Promise<User | null> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.findUserByAlias(alias);
+        const request: TweeterRequest = {
+          token: authToken.token,
+          userAlias: alias
+        }
+        
+        const response = await ServerFacade.instance.getUser(request)
+        return User.fromDTO(response.user)
       };
 
     public async logout (authToken: AuthToken): Promise<void> {
