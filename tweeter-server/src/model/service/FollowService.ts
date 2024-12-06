@@ -1,7 +1,11 @@
 import { User, FakeData, UserDTO } from "tweeter-shared";
+import {DynamoDaoFactory} from "../DataAccess/DynamoDao/DynamoDaoFactory";
+import {AbstractDaoFactory} from "../DataAccess/AbstractDaoFactory";
 
 export class FollowService {
-    public async loadMoreFollowers (
+  private daoFactory: AbstractDaoFactory = new DynamoDaoFactory()
+
+  public async loadMoreFollowers (
         token: string,
         userAlias: string,
         pageSize: number,

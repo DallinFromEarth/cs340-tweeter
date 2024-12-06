@@ -1,4 +1,4 @@
 export interface TweeterRequest {
-    readonly token: string,
+    token: string,
     readonly userAlias: string,
 }

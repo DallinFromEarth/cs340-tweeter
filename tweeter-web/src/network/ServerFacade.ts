@@ -24,6 +24,8 @@ import {
   
     private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
+    private currentSessionToken: string | null = "STEVES MOM IS A GOAT";
+
     private static _instance: ServerFacade | null = null;
     public static get instance(): ServerFacade {
         if (this._instance === null) {
@@ -93,24 +95,32 @@ import {
     public async getMoreFollowers(
         request: PagedItemRequest<UserDTO>
     ): Promise<[User[], boolean]> {
-        return this.getMoreUserItems(request, "/follower/list", "followers")
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
+      return this.getMoreUserItems(request, "/follower/list", "followers")
     }
 
     public async getMoreFollowees(
       request: PagedItemRequest<UserDTO>
     ): Promise<[User[], boolean]> {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       return this.getMoreUserItems(request, "/followee/list", "followees")
     }
 
     public async getMoreFeedItems(
       request: PagedItemRequest<StatusDTO>
     ): Promise<[Status[], boolean]> {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       return this.getMoreStatusItems(request, "/feed/items", "feed items")
     }
 
     public async getMoreStoryItems(
       request: PagedItemRequest<StatusDTO>
     ): Promise<[Status[], boolean]> {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       return this.getMoreStatusItems(request, "/story/items", "story items")
     }
 
@@ -121,7 +131,9 @@ import {
       RegisterRequest,
       AuthResponse
     >(request, "/auth/register");
-    return response
+
+      this.currentSessionToken = response.authToken._token
+      return response
     }
 
     public async doLogin(
@@ -131,18 +143,28 @@ import {
       AuthRequest,
       AuthResponse
     >(request, "/auth/login")
-    return response
+
+      console.log("LOGIN RESPONSE", response)
+
+      this.currentSessionToken = response.authToken.token
+      return response
     }
 
     public async doLogout(request: TweeterRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       TweeterRequest,
       TweeterResponse
       >(request, "/auth/logout")
+
+      this.currentSessionToken = null
       return response
     }
 
     public async postStatus(request: PostStatusRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       PostStatusRequest,
       TweeterResponse
@@ -151,6 +173,8 @@ import {
     }
 
     public async getFolloweesCount(request: TweeterRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       TweeterRequest,
       CountResponse
@@ -159,6 +183,8 @@ import {
     }
 
     public async getFollowersCount(request: TweeterRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       TweeterRequest,
       CountResponse
@@ -167,6 +193,8 @@ import {
     }
 
     public async getIsFollowerStatus(request: IsFollowerRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       IsFollowerRequest,
       IsFollowerResponse
@@ -175,6 +203,8 @@ import {
     }
 
     public async doFollow(request: ChangeFollowRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       ChangeFollowRequest,
       TweeterResponse
@@ -183,6 +213,8 @@ import {
     }
 
     public async doUnfollow(request: ChangeFollowRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       ChangeFollowRequest,
       TweeterResponse
@@ -191,6 +223,8 @@ import {
     }
 
     public async getUser(request: TweeterRequest) {
+      if (this.currentSessionToken != null) request.token = this.currentSessionToken
+
       const response = await this.clientCommunicator.doPost<
       TweeterRequest,
       UserResponse

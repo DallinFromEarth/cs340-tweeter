@@ -1,33 +1,10 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { FakeData, User } from "tweeter-shared";
+import {DynamoDaoFactory} from "../DataAccess/DynamoDao/DynamoDaoFactory";
+import {AbstractDaoFactory} from "../DataAccess/AbstractDaoFactory";
+import {AuthService} from "./AuthService";
 
 export class UserService {
-    public async login (alias: string, password: string): Promise<[User, AuthToken]> {
-        // TODO: Replace with the result of calling the server
-        let user = FakeData.instance.firstUser;
-    
-        if (user === null) {
-          throw new Error("Invalid alias or password");
-        }
-    
-        return [user, FakeData.instance.authToken];
-    };
-
-    public async register (
-        firstName: string,
-        lastName: string,
-        alias: string,
-        password: string,
-        userImageBytes: string
-      ): Promise<[User, AuthToken]> {
-        // TODO: Replace with the result of calling the server
-        let user = FakeData.instance.firstUser;
-    
-        if (user === null) {
-          throw new Error("Invalid registration");
-        }
-    
-        return [user, FakeData.instance.authToken];
-    };
+    private daoFactory: AbstractDaoFactory = new DynamoDaoFactory()
 
     public async getIsFollowerStatus (
         authToken: string,
@@ -58,10 +35,9 @@ export class UserService {
         authToken: string,
         userAliasToFollow: string
     ): Promise<[followersCount: number, followeesCount: number]> {
-        // Pause so we can see the following message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-    
-        // TODO: Call the server
+        const user = await AuthService.validateAndGetUser(authToken)
+
+        await this.daoFactory.getFollowDao().addFollower(user.alias, userAliasToFollow)
     
         let followersCount = await this.getFollowersCount(authToken, userAliasToFollow);
         let followeesCount = await this.getFolloweesCount(authToken, userAliasToFollow);
@@ -91,9 +67,4 @@ export class UserService {
         // TODO: Replace with the result of calling server
         return FakeData.instance.findUserByAlias(alias);
       };
-
-    public async logout (authToken: string): Promise<void> {
-      // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-      await new Promise((res) => setTimeout(res, 1000));
-    };
 }
