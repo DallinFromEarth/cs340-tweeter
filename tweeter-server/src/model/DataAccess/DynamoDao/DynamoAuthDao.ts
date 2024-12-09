@@ -3,7 +3,11 @@ import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {AuthDao} from "../AuthDao";
 
 export class DynamoAuthDao implements AuthDao {
-    private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+    private readonly client: DynamoDBDocumentClient
+
+    constructor(client: DynamoDBDocumentClient) {
+        this.client = client
+    }
 
     readonly tableName = "auth";
     readonly tokenAtrr = "token";

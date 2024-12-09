@@ -24,7 +24,7 @@ import {
   
     private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
-    private currentSessionToken: string | null = "STEVES MOM IS A GOAT";
+    private currentSessionToken: string | null = null;
 
     private static _instance: ServerFacade | null = null;
     public static get instance(): ServerFacade {
@@ -132,6 +132,8 @@ import {
       AuthResponse
     >(request, "/auth/register");
 
+      this.handleRequestError(response, 'register')
+
       this.currentSessionToken = response.authToken._token
       return response
     }
@@ -144,9 +146,10 @@ import {
       AuthResponse
     >(request, "/auth/login")
 
-      console.log("LOGIN RESPONSE", response)
+      this.handleRequestError(response, 'login')
 
-      this.currentSessionToken = response.authToken.token
+      this.currentSessionToken = response.authToken._token
+      console.log("SAVING TOKEN:", this.currentSessionToken)
       return response
     }
 
@@ -157,6 +160,8 @@ import {
       TweeterRequest,
       TweeterResponse
       >(request, "/auth/logout")
+
+      this.handleRequestError(response, 'logout')
 
       this.currentSessionToken = null
       return response
@@ -169,6 +174,9 @@ import {
       PostStatusRequest,
       TweeterResponse
       >(request, "/status")
+
+      this.handleRequestError(response, 'post status')
+
       return response
     }
 
@@ -179,6 +187,9 @@ import {
       TweeterRequest,
       CountResponse
       >(request, "/followee/count")
+
+      this.handleRequestError(response, 'get followees count')
+
       return response
     }
 
@@ -189,6 +200,9 @@ import {
       TweeterRequest,
       CountResponse
       >(request, "/follower/count")
+
+      this.handleRequestError(response, 'get followers count')
+
       return response
     }
 
@@ -199,6 +213,9 @@ import {
       IsFollowerRequest,
       IsFollowerResponse
       >(request, "/follower/check")
+
+      this.handleRequestError(response, 'check is follower status')
+
       return response
     }
 
@@ -209,6 +226,9 @@ import {
       ChangeFollowRequest,
       TweeterResponse
       >(request, "/follow")
+
+      this.handleRequestError(response, 'follow user')
+
       return response
     }
 
@@ -219,6 +239,9 @@ import {
       ChangeFollowRequest,
       TweeterResponse
       >(request, "/unfollow")
+
+      this.handleRequestError(response, 'unfollow user')
+
       return response
     }
 
@@ -229,6 +252,16 @@ import {
       TweeterRequest,
       UserResponse
       >(request, "/user")
+
+      this.handleRequestError(response, 'get user')
+
       return response
+    }
+
+    private handleRequestError(response: any, context: string) {
+      if (!response.success) {
+        console.error(response);
+        throw new Error(response.errorMessage || `Failed to ${context}`);
+      }
     }
   }

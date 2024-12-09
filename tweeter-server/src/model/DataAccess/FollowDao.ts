@@ -5,4 +5,8 @@ export interface FollowDao {
      * @param followee_handle the user that will now be followed
      */
     addFollower(follower_handle: String, followee_handle: String): Promise<void>
+    removeFollower(follower_handle: String, followee_handle: String): Promise<void>
+    getFollowingCount(follower_handle: String): Promise<number>
+    getFollowerCount(followee_handle: String): Promise<number>
+    isFollowing(follower_handle: String, followee_handle: String): Promise<boolean>
 }

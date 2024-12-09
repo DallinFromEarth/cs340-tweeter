@@ -4,7 +4,11 @@ import {DynamoDBDocumentClient, GetCommand, PutCommand} from "@aws-sdk/lib-dynam
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 
 export class DynamoUserDao implements UserDao {
-    private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+    private readonly client: DynamoDBDocumentClient
+
+    constructor(client: DynamoDBDocumentClient) {
+        this.client = client
+    }
 
     readonly tableName = "users";
     readonly userHandleAtrr = "user_handle";

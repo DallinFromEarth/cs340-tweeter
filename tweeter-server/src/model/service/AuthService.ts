@@ -53,7 +53,8 @@ export class AuthService {
 
     /**
      * ensures the provided authToken is valid, and if it is valid, returns the associated User object.
-     * It also refreshes the authToken
+     * It also refreshes the authToken if valid.
+     * If it's not valid, it throws an error.
      * @param authToken
      */
     public static async validateAndGetUser(authToken: string): Promise<User> {
