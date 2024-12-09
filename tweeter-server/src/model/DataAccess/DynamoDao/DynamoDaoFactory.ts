@@ -9,6 +9,8 @@ import {StoryDao} from "../StoryDao";
 import {DynamoStoryDao} from "./DynamoStoryDao";
 import {DynamoDBDocumentClient} from "@aws-sdk/lib-dynamodb";
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
+import {FeedDao} from "../FeedDao";
+import {DynamoFeedDao} from "./DynamoFeedDao";
 
 export class DynamoDaoFactory extends AbstractDaoFactory {
     private readonly client: DynamoDBDocumentClient = DynamoDBDocumentClient.from(new DynamoDBClient());
@@ -27,5 +29,9 @@ export class DynamoDaoFactory extends AbstractDaoFactory {
 
     getStoryDao(): StoryDao {
         return new DynamoStoryDao(this.client);
+    }
+
+    getFeedDao(): FeedDao {
+        return new DynamoFeedDao(this.client);
     }
 }
