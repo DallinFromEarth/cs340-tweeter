@@ -40,14 +40,14 @@ export abstract class PagedItemPresenter<T, U> extends Presenter {
     protected abstract createService(): U;
 
     public async loadMoreItems(authToken: AuthToken, user: User) {
-        this.doFailureReportinOperation(async () => {
-          if (this.hasMoreItems) {
-            let [newItems, hasMore] = await this.getMoreItems(authToken, user);
-    
-            this.hasMoreItems = hasMore;
-            this.lastItem = newItems[newItems.length - 1];
-            this.view.addItems(newItems);
-          }
+        await this.doFailureReportinOperation(async () => {
+            if (this.hasMoreItems) {
+                let [newItems, hasMore] = await this.getMoreItems(authToken, user);
+
+                this.hasMoreItems = hasMore;
+                this.lastItem = newItems[newItems.length - 1];
+                this.view.addItems(newItems);
+            }
         }, this.getItemDescription())
     }
 

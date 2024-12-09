@@ -9,17 +9,19 @@ export class AuthService {
     private static daoFactory: AbstractDaoFactory = new DynamoDaoFactory()
 
     public async login (alias: string, password: string): Promise<[User, AuthToken]> {
+        const realAlias = '@' + alias
+
         const userDao: UserDao = AuthService.daoFactory.getUserDao()
 
-        const hashedPassword = await userDao.getHashedPassword(alias)
+        const hashedPassword = await userDao.getHashedPassword(realAlias)
 
         if (!hashedPassword) throw new Error("User not found")
 
         if (!await bcrypt.compare(password, hashedPassword)) throw new Error("Wrong password... into the river you go!")
 
-        const user = await userDao.getUser(alias)
+        const user = await userDao.getUser(realAlias)
         if (user == null) throw new Error("something went wrong fetching user object")
-        const auth = await this.generateNewSession(alias)
+        const auth = await this.generateNewSession(realAlias)
 
         return [user, auth];
     };
@@ -32,12 +34,13 @@ export class AuthService {
         userImageBytes: string
     ): Promise<[User, AuthToken]> {
         const userDao: UserDao = AuthService.daoFactory.getUserDao()
-        const test: User | null = await userDao.getUser(alias)
+        const realAlias = '@' + alias
+        const test: User | null = await userDao.getUser(realAlias)
         if (test != null) { throw new Error("Username already taken!") }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        await userDao.addUser(new User(firstName, lastName, alias, "NotSetUp.com"), hashedPassword)
+        await userDao.addUser(new User(firstName, lastName, realAlias, "https://brightspotcdn.byu.edu/dims4/default/a15e2ef/2147483647/strip/true/crop/1604x1604+0+320/resize/200x200!/quality/90/?url=https%3A%2F%2Fbrigham-young-brightspot-us-east-2.s3.us-east-2.amazonaws.com%2F43%2Fd9%2F5f7ee3211817aab308d765da3ea4%2Fwilkerson-jerod-1808-52-07-1.jpg"), hashedPassword)
 
         const authToken: AuthToken = await this.generateNewSession(alias)
 

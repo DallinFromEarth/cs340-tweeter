@@ -1,4 +1,4 @@
-import {FakeData, User} from "tweeter-shared";
+import {User} from "tweeter-shared";
 import {DynamoDaoFactory} from "../DataAccess/DynamoDao/DynamoDaoFactory";
 import {AbstractDaoFactory} from "../DataAccess/AbstractDaoFactory";
 import {AuthService} from "./AuthService";

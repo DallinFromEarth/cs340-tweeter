@@ -13,11 +13,11 @@ const container = document.getElementById("root")!;
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
+  //<React.StrictMode> I removed strict mode because it intentionally double-calls paged item getters
     <UserInfoProvider>
       <ToastProvider>
         <App />
       </ToastProvider>
     </UserInfoProvider>
-  </React.StrictMode>
+  //</React.StrictMode>
 );

@@ -51,7 +51,7 @@ export class DynamoFollowDao implements FollowDao {
     async getFollowerCount(followee_handle: String): Promise<number> {
         const params: QueryCommandInput = {
             TableName: this.tableName,
-            IndexName: this.indexName,  // Use the GSI that has followee_handle as the key
+            IndexName: this.indexName,
             KeyConditionExpression: "#followee = :followee",
             ExpressionAttributeNames: {
                 "#followee": this.followeeHandleAtrr
@@ -69,15 +69,12 @@ export class DynamoFollowDao implements FollowDao {
     async getFollowingCount(follower_handle: String): Promise<number> {
         const params: QueryCommandInput = {
             TableName: this.tableName,
-            IndexName: this.indexName,
-            KeyConditionExpression: "#followee = :followee AND #follower = :follower",
+            KeyConditionExpression: "#follower = :follower",
             ExpressionAttributeNames: {
-                "#followee": this.followeeHandleAtrr,
                 "#follower": this.followerHandleAtrr
             },
             ExpressionAttributeValues: {
-                ":followee": follower_handle,  // The index requires followee_handle
-                ":follower": follower_handle   // The follower we're counting for
+                ":follower": follower_handle
             },
             Select: "COUNT"
         };
@@ -102,5 +99,63 @@ export class DynamoFollowDao implements FollowDao {
 
         const response = await this.client.send(new QueryCommand(params));
         return (response.Items || []).length > 0;
+    }
+
+    async getNextFollowersPage(followee_handle: String, pageSize: number, lastUserAlias?: String): Promise<[String[], boolean]> {
+        const params: QueryCommandInput = {
+            TableName: this.tableName,
+            IndexName: this.indexName,
+            KeyConditionExpression: "#followee = :followee",
+            ExpressionAttributeNames: {
+                "#followee": this.followeeHandleAtrr
+            },
+            ExpressionAttributeValues: {
+                ":followee": followee_handle
+            },
+            Limit: pageSize
+        };
+
+        if (lastUserAlias) {
+            params.ExclusiveStartKey = {
+                [this.followerHandleAtrr]: lastUserAlias,
+                [this.followeeHandleAtrr]: followee_handle
+            };
+        }
+
+        const response = await this.client.send(new QueryCommand(params));
+
+        const followers = (response.Items || []).map(item => item[this.followerHandleAtrr]);
+        const hasMore = !!response.LastEvaluatedKey;
+
+        return [followers, hasMore];
+    }
+
+
+    async getNextFolloweesPage(follower_handle: String, pageSize: number, lastUserAlias?: String): Promise<[String[], boolean]> {
+        const params: QueryCommandInput = {
+            TableName: this.tableName,
+            KeyConditionExpression: "#follower = :follower",
+            ExpressionAttributeNames: {
+                "#follower": this.followerHandleAtrr
+            },
+            ExpressionAttributeValues: {
+                ":follower": follower_handle
+            },
+            Limit: pageSize
+        };
+
+        if (lastUserAlias) {
+            params.ExclusiveStartKey = {
+                [this.followerHandleAtrr]: follower_handle,
+                [this.followeeHandleAtrr]: lastUserAlias
+            };
+        }
+
+        const response = await this.client.send(new QueryCommand(params));
+
+        const followees = (response.Items || []).map(item => item[this.followeeHandleAtrr]);
+        const hasMore = !!response.LastEvaluatedKey;
+
+        return [followees, hasMore];
     }
 }

@@ -97,7 +97,7 @@ import {
     ): Promise<[User[], boolean]> {
       if (this.currentSessionToken != null) request.token = this.currentSessionToken
 
-      return this.getMoreUserItems(request, "/follower/list", "followers")
+      return await this.getMoreUserItems(request, "/follower/list", "followers")
     }
 
     public async getMoreFollowees(
@@ -105,7 +105,7 @@ import {
     ): Promise<[User[], boolean]> {
       if (this.currentSessionToken != null) request.token = this.currentSessionToken
 
-      return this.getMoreUserItems(request, "/followee/list", "followees")
+      return await this.getMoreUserItems(request, "/followee/list", "followees")
     }
 
     public async getMoreFeedItems(
@@ -113,7 +113,7 @@ import {
     ): Promise<[Status[], boolean]> {
       if (this.currentSessionToken != null) request.token = this.currentSessionToken
 
-      return this.getMoreStatusItems(request, "/feed/items", "feed items")
+      return await this.getMoreStatusItems(request, "/feed/items", "feed items")
     }
 
     public async getMoreStoryItems(
@@ -121,7 +121,7 @@ import {
     ): Promise<[Status[], boolean]> {
       if (this.currentSessionToken != null) request.token = this.currentSessionToken
 
-      return this.getMoreStatusItems(request, "/story/items", "story items")
+      return await this.getMoreStatusItems(request, "/story/items", "story items")
     }
 
     public async doRegister(
@@ -134,6 +134,7 @@ import {
 
       this.handleRequestError(response, 'register')
 
+      // @ts-ignore
       this.currentSessionToken = response.authToken._token
       return response
     }
@@ -148,6 +149,7 @@ import {
 
       this.handleRequestError(response, 'login')
 
+      // @ts-ignore
       this.currentSessionToken = response.authToken._token
       console.log("SAVING TOKEN:", this.currentSessionToken)
       return response

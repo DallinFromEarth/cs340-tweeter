@@ -9,4 +9,6 @@ export interface FollowDao {
     getFollowingCount(follower_handle: String): Promise<number>
     getFollowerCount(followee_handle: String): Promise<number>
     isFollowing(follower_handle: String, followee_handle: String): Promise<boolean>
+    getNextFollowersPage(followee_handle: String, pageSize: number, lastUserAlias?: String): Promise<[String[], boolean]>
+    getNextFolloweesPage(follower_handle: String, pageSize: number, lastUserAlias?: String): Promise<[String[], boolean]>
 }
