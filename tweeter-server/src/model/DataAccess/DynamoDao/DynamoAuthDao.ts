@@ -23,7 +23,8 @@ export class DynamoAuthDao implements AuthDao {
                 [this.tokenAtrr]: token,
                 [this.userHandleAtrr]: user_handle,
                 [this.expiresAtrr]: (Date.now() + (60 * 1000 * this.MINUTES_TO_LIVE))
-            }
+            },
+            ConsistentRead: true
         };
         await this.client.send(new PutCommand(params));
     }
@@ -33,7 +34,8 @@ export class DynamoAuthDao implements AuthDao {
             TableName: this.tableName,
             Key: {
                 [this.tokenAtrr]: token
-            }
+            },
+            ConsistentRead: true
         };
 
         console.log('Table Name:', this.tableName);

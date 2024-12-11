@@ -11,6 +11,8 @@ import {DynamoDBDocumentClient} from "@aws-sdk/lib-dynamodb";
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
 import {FeedDao} from "../FeedDao";
 import {DynamoFeedDao} from "./DynamoFeedDao";
+import {ImageDao} from "../ImageDao";
+import {DynamoButReallyS3Dao} from "./DynamoButReallyS3Dao";
 
 export class DynamoDaoFactory extends AbstractDaoFactory {
     private readonly client: DynamoDBDocumentClient = DynamoDBDocumentClient.from(new DynamoDBClient());
@@ -33,5 +35,9 @@ export class DynamoDaoFactory extends AbstractDaoFactory {
 
     getFeedDao(): FeedDao {
         return new DynamoFeedDao(this.client);
+    }
+
+    getImageDao(): ImageDao {
+        return new DynamoButReallyS3Dao();
     }
 }

@@ -22,7 +22,8 @@ export class DynamoUserDao implements UserDao {
             TableName: this.tableName,
             Key: {
                 [this.userHandleAtrr]: alias
-            }
+            },
+            ConsistentRead: true
         };
 
         const response = await this.client.send(new GetCommand(params));
@@ -54,7 +55,8 @@ export class DynamoUserDao implements UserDao {
             TableName: this.tableName,
             Key: {
                 [this.userHandleAtrr]: alias
-            }
+            },
+            ConsistentRead: true
         };
 
         const response = await this.client.send(new GetCommand(params));

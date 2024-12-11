@@ -40,11 +40,14 @@ export class AuthService {
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        await userDao.addUser(new User(firstName, lastName, realAlias, "https://brightspotcdn.byu.edu/dims4/default/a15e2ef/2147483647/strip/true/crop/1604x1604+0+320/resize/200x200!/quality/90/?url=https%3A%2F%2Fbrigham-young-brightspot-us-east-2.s3.us-east-2.amazonaws.com%2F43%2Fd9%2F5f7ee3211817aab308d765da3ea4%2Fwilkerson-jerod-1808-52-07-1.jpg"), hashedPassword)
 
-        const authToken: AuthToken = await this.generateNewSession(alias)
+        const profilePicLink = await AuthService.daoFactory.getImageDao().putImage(alias, userImageBytes)
 
-        const newUser: User | null = await userDao.getUser(alias)
+        await userDao.addUser(new User(firstName, lastName, realAlias, profilePicLink), hashedPassword)
+
+        const authToken: AuthToken = await this.generateNewSession(realAlias)
+
+        const newUser: User | null = await userDao.getUser(realAlias)
         if (newUser == null) { throw new Error("Somehow the user didn't get added to the database") }
 
         return [newUser, authToken];
