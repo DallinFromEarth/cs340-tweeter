@@ -1,4 +1,10 @@
-import { DynamoDBDocumentClient, PutCommand, QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
+import {
+    BatchWriteCommand,
+    DynamoDBDocumentClient,
+    PutCommand,
+    QueryCommand,
+    QueryCommandInput
+} from "@aws-sdk/lib-dynamodb";
 import {FeedDao} from "../FeedDao";
 import {Status, StatusDTO, User} from "tweeter-shared";
 
@@ -15,6 +21,7 @@ export class DynamoFeedDao implements FeedDao {
     readonly sortKeyAttr = "sort_key";
     readonly timestampAttr = "timestamp";
     readonly postAttr = "post";
+    readonly BATCH_SIZE = 25
 
     private createSortKey(timestamp: number, followeeAlias: string): string {
         // Create ISO string and remove any non-alphanumeric characters
@@ -35,6 +42,38 @@ export class DynamoFeedDao implements FeedDao {
         };
 
         await this.client.send(new PutCommand(params));
+    }
+
+    async batchAddToFeed(updates: { followerAlias: string, followeeAlias: string, timestamp: number, post: string }[]): Promise<void> {
+        // Split updates into chunks of BATCH_SIZE
+        for (let i = 0; i < updates.length; i += this.BATCH_SIZE) {
+            const chunk = updates.slice(i, i + this.BATCH_SIZE);
+
+            const writeRequests = chunk.map(update => ({
+                PutRequest: {
+                    Item: {
+                        [this.followerAliasAttr]: update.followerAlias,
+                        [this.followeeAliasAttr]: update.followeeAlias,
+                        [this.sortKeyAttr]: this.createSortKey(update.timestamp, update.followeeAlias),
+                        [this.timestampAttr]: update.timestamp,
+                        [this.postAttr]: update.post
+                    }
+                }
+            }));
+
+            const params = {
+                RequestItems: {
+                    [this.tableName]: writeRequests
+                }
+            };
+
+            try {
+                await this.client.send(new BatchWriteCommand(params));
+            } catch (error) {
+                console.error('Batch write failed:', error);
+                throw error;
+            }
+        }
     }
 
     async getNextFeedPage(followerAlias: string, pageSize: number, lastStatus?: StatusDTO): Promise<[Status[], boolean]> {

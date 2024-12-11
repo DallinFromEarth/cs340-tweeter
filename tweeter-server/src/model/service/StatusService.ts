@@ -1,12 +1,18 @@
-import { Status, FakeData, StatusDTO } from "tweeter-shared";
+import { Status, StatusDTO } from "tweeter-shared";
 import {DynamoDaoFactory} from "../DataAccess/DynamoDao/DynamoDaoFactory";
 import {AbstractDaoFactory} from "../DataAccess/AbstractDaoFactory";
 import {AuthService} from "./AuthService";
+import {PostStatusMessage} from "../messages/StatusMessages";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 
 export class StatusService {
-  private daoFactory: AbstractDaoFactory = new DynamoDaoFactory()
+    private daoFactory: AbstractDaoFactory = new DynamoDaoFactory()
 
-  public async loadMoreStoryItems (
+    private readonly sqsClient = new SQSClient({ region: "us-west-1" });
+    private readonly POST_STATUS_QUEUE_URL = "https://sqs.us-west-1.amazonaws.com/378503310330/tweeter-post-status";
+
+
+    public async loadMoreStoryItems (
         authToken: string,
         userAlias: string,
         pageSize: number,
@@ -55,17 +61,24 @@ export class StatusService {
 
           await this.daoFactory.getStoryDao().addStory(user.alias, newStatus.post)
 
-          //publish to feeds yo
-          let previous: String | undefined = undefined
-          const feedDao = this.daoFactory.getFeedDao()
-          while (true) {
-              const daoResponse = await this.daoFactory.getFollowDao().getNextFollowersPage(user.alias, 3, previous)
+          try {
+              const message: PostStatusMessage = {
+                  authorAlias: newStatus.user.alias,
+                  post: newStatus.post,
+                  timestamp: newStatus.timestamp
+              };
 
-              daoResponse[0].forEach((alias) => {
-                  feedDao.addToFeed(alias.toString(), user.alias, newStatus.timestamp, newStatus.post)
-              })
+              const command = new SendMessageCommand({
+                  QueueUrl: this.POST_STATUS_QUEUE_URL,
+                  MessageBody: JSON.stringify(message)
+              });
 
-              if (!daoResponse[1]) break
+              await this.sqsClient.send(command);
+
+              return
+          } catch (error) {
+              console.error("Error sending message to SQS:", error);
+              throw error;
           }
       };
 }
